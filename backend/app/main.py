@@ -3,8 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, FileResponse
 import tempfile
 import os
-from weasyprint import HTML as WeasyHTML
-
 from .models import VulnerabilityInput, ReportOutput, CVSSMetrics
 from .report_generator import ReportGenerator
 from .cvss_calculator import CVSSCalculator
@@ -67,6 +65,14 @@ async def calculate_cvss(metrics: CVSSMetrics):
 async def export_pdf(report_html: str):
     """Export report as PDF"""
     try:
+        try:
+            from weasyprint import HTML
+        except OSError:
+            raise HTTPException(
+                status_code=500, 
+                detail="PDF generation failed: GTK3 libraries not found. Please install GTK3 for Windows."
+            )
+
         with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
             HTML(string=report_html).write_pdf(tmp.name)
             return FileResponse(
@@ -74,6 +80,8 @@ async def export_pdf(report_html: str):
                 media_type='application/pdf',
                 filename=f'vulnerability-report.pdf'
             )
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

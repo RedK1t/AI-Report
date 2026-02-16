@@ -269,3 +269,18 @@ A {data.severity} severity vulnerability was identified in {data.target_url}.
 {data.description}
 
 ## Proof of Concept
+
+{data.poc}
+
+## Impact
+
+{data.impact}
+
+## Remediation
+
+{data.remediation}
+
+## References
+
+{data.references}
+"""
