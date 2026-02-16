@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.10.11-slim
 
 WORKDIR /app
 
@@ -15,6 +15,9 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+ENV AI_REPORT_PORT=3002
+
+
 COPY app/ ./app/
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "3002", "--reload"]

@@ -4,10 +4,13 @@ from fastapi.responses import HTMLResponse, FileResponse
 import tempfile
 import os
 from weasyprint import HTML as WeasyHTML
+from dotenv import load_dotenv
 
 from .models import VulnerabilityInput, ReportOutput, CVSSMetrics
 from .report_generator import ReportGenerator
 from .cvss_calculator import CVSSCalculator
+
+load_dotenv()
 
 app = FastAPI(
     title="PentestAI API",
@@ -68,7 +71,7 @@ async def export_pdf(report_html: str):
     """Export report as PDF"""
     try:
         with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp:
-            HTML(string=report_html).write_pdf(tmp.name)
+            WeasyHTML(string=report_html).write_pdf(tmp.name)
             return FileResponse(
                 tmp.name, 
                 media_type='application/pdf',
@@ -145,4 +148,5 @@ async def get_owasp_top10():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.getenv("AI_REPORT_PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

@@ -233,7 +233,7 @@ class ReportGenerator:
             <div class="section">
                 <h2 class="section-title">References</h2>
                 <ul style="line-height: 2;">
-                    {''.join([f'<li><a href="{ref.strip()}" style="color: #2563eb; text-decoration: none;">{ref.strip()}</a></li>' for ref in data.references.split(',')])}
+                    {''.join([f'<li><a href="{ref.strip()}" style="color: #2563eb; text-decoration: none;">{ref.strip()}</a></li>' for ref in data.references.split(',')]) if data.references else '<li><a href="https://owasp.org/www-project-top-ten/" style="color: #2563eb; text-decoration: none;">OWASP Top 10</a></li>'}
                 </ul>
             </div>
 
@@ -269,3 +269,13 @@ A {data.severity} severity vulnerability was identified in {data.target_url}.
 {data.description}
 
 ## Proof of Concept
+
+{data.poc if data.poc else 'Not provided'}
+
+## Remediation
+
+{data.remediation if data.remediation else 'Immediate patching and security review recommended.'}
+
+---
+*Report ID: #{report_id}* | *Generated: {timestamp.strftime('%Y-%m-%d %H:%M:%S')} UTC*
+"""
