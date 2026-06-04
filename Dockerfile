@@ -15,8 +15,7 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-ENV AI_REPORT_PORT=3002
-
+# AI_REPORT_PORT is injected from AI-Report/.env via docker-compose env_file.
 
 COPY app/ ./app/
 
